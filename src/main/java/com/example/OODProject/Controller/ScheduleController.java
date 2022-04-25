@@ -1,5 +1,7 @@
 package com.example.OODProject.Controller;
 
+import com.example.OODProject.Exception.NotFoundException;
+import com.example.OODProject.Model.Flight;
 import com.example.OODProject.Model.Schedule;
 import com.example.OODProject.Model.Users;
 import com.example.OODProject.Request.ScheduleRequest;
@@ -22,5 +24,17 @@ public class ScheduleController {
     {
         System.out.println("Here");
         return service.add_schedule(schedule);
+    }
+
+    @GetMapping("/view")
+    public Iterable<Schedule> view() {
+        return service.view_all();
+    }
+
+    @GetMapping("/viewByScheduleID/{id}")
+    @ExceptionHandler(NotFoundException.class)
+    public Schedule viewByScheduleID(@PathVariable("id") Long schedule_id)
+    {
+        return service.view_specific_schedule(schedule_id);
     }
 }
