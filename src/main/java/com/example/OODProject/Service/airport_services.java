@@ -8,5 +8,5 @@ public interface airport_services {
       public ResponseEntity<?> modify_airport(Airport airport, String airport_code);
       public ResponseEntity<?> delete_airport(String airport_code);
       public Airport view_specific_airport(String airport_code);
-      public Iterable<Airport> view_all();
+      public ResponseEntity<?> view_all();
 }

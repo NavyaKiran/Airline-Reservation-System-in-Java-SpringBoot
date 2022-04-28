@@ -11,3 +11,5 @@ public class OodProjectApplication {
 	}
 
 }
+
+//MVC pattern if we consider Postman as a view point

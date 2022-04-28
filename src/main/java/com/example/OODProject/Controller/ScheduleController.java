@@ -26,6 +26,13 @@ public class ScheduleController {
         return service.add_schedule(schedule);
     }
 
+    @DeleteMapping("/delete/{id}")
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> delete_schedule(@PathVariable("id") Long schedule_id)
+    {
+        return service.delete_schedule(schedule_id);
+    }
+
     @GetMapping("/view")
     public Iterable<Schedule> view() {
         return service.view_all();

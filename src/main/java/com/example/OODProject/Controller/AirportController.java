@@ -38,10 +38,16 @@ public class AirportController {
 
     }
 
-    @GetMapping("/view")
-    public Iterable<Airport> view() {
+//    @GetMapping("/view")
+//    public Iterable<Airport> view() {
+//        return service.view_all();
+//    }
+
+        @GetMapping("/view")
+        public ResponseEntity<?> view() {
         return service.view_all();
     }
+
 
     @GetMapping("/viewByAirportCode/{id}")
     @ExceptionHandler(NotFoundException.class)

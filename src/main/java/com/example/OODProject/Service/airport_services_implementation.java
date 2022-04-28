@@ -4,17 +4,19 @@ import com.example.OODProject.DataAccess.airport_dataaccess;
 import com.example.OODProject.Exception.AvailableRecordException;
 import com.example.OODProject.Exception.NotFoundException;
 import com.example.OODProject.Model.Airport;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
 @Service
-public class airport_services_implementation implements airport_services{
+public class airport_services_implementation implements airport_services {
     @Autowired
     airport_dataaccess airportObj;
 
@@ -22,16 +24,12 @@ public class airport_services_implementation implements airport_services{
     public ResponseEntity<?> add_airport(Airport airport) {
         Optional<Airport> findByAirportCode = airportObj.findById(airport.getAirport_code());
         try {
-            if(!findByAirportCode.isPresent())
-            {
+            if (!findByAirportCode.isPresent()) {
                 airportObj.save(airport);
                 return new ResponseEntity<Airport>(airport, HttpStatus.OK);
-            }
-            else
-                throw new AvailableRecordException("The airport with airport code "+airport.getAirport_code()+" is already available");
-        }
-        catch(AvailableRecordException exception)
-        {
+            } else
+                throw new AvailableRecordException("The airport with airport code " + airport.getAirport_code() + " is already available");
+        } catch (AvailableRecordException exception) {
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -54,10 +52,7 @@ public class airport_services_implementation implements airport_services{
 
             airportObj.save(airport_object);
             return new ResponseEntity<Airport>(airport_object, HttpStatus.OK);
-        }
-
-        catch(NotFoundException exception)
-        {
+        } catch (NotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
 
         }
@@ -67,13 +62,11 @@ public class airport_services_implementation implements airport_services{
     @Override
     public ResponseEntity<?> delete_airport(String airport_code) {
         Optional<Airport> findByAirportCode = airportObj.findById(airport_code);
-        if(findByAirportCode.isPresent())
-        {
+        if (findByAirportCode.isPresent()) {
             airportObj.deleteById(airport_code);
             return new ResponseEntity<>("The airport with airport code " + airport_code + "has been deleted", HttpStatus.ACCEPTED);
-        }
-        else
-            return new  ResponseEntity<>("The airport with airport code " +airport_code+ "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else
+            return new ResponseEntity<>("The airport with airport code " + airport_code + "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
@@ -87,9 +80,18 @@ public class airport_services_implementation implements airport_services{
     }
 
 
+//    @Override
+//    public Iterable<Airport> view_all() {
+//        return airportObj.findAll();
+//
 
     @Override
-    public Iterable<Airport> view_all() {
-        return airportObj.findAll();
+    public ResponseEntity<?> view_all() {
+        try {
+            List<Airport> airports = airportObj.findAll();
+            return new ResponseEntity<>(airports, HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }

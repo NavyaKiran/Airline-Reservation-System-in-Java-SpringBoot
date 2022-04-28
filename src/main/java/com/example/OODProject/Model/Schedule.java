@@ -36,8 +36,22 @@ public class Schedule {
     private ScheduleStatus ScheduleStatus;
 
     Instant scheduled_on;
-    HashSet<Booking> bookings = new HashSet<>();
+    //HashSet<Long> bookings = new HashSet<>();
+    private HashSet<Integer> bookings = new HashSet<Integer>();
     private double price;
+
+    public void addBooking(Integer booking){
+        this.bookings.add(booking);
+    }
+
+    public void removeBooking(Integer booking){
+        this.bookings.remove(booking);
+    }
+
+    public boolean checkBookingOverflow(){
+//        System.out.println(this.bookings.size() + " _ " + this.flight.getNumber_of_seats());
+        return this.bookings.size() < this.flight.getNumber_of_seats();
+    }
 
 //    public boolean checkSeat(Flight flight){
 //        return flight.getNumber_of_seats() >= this.bookings.size();
