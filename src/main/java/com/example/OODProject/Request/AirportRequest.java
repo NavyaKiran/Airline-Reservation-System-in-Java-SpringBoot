@@ -1,21 +1,16 @@
-package com.example.OODProject.Model;
+package com.example.OODProject.Request;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Airport {
-    @Id
+//@AllArgsConstructor
+public class AirportRequest {
     private String airport_code;
     private String airport_name;
     private String airport_city;
     private String airport_state;
     private String airport_country;
 }
-

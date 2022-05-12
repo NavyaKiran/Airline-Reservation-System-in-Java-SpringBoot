@@ -4,6 +4,9 @@ import com.example.OODProject.DataAccess.airport_dataaccess;
 import com.example.OODProject.Exception.AvailableRecordException;
 import com.example.OODProject.Exception.NotFoundException;
 import com.example.OODProject.Model.Airport;
+import com.example.OODProject.Model.UserRoles;
+import com.example.OODProject.Model.Users;
+import com.example.OODProject.Request.AirportRequest;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,17 +23,44 @@ public class airport_services_implementation implements airport_services {
     @Autowired
     airport_dataaccess airportObj;
 
+//    @Override
+//    public ResponseEntity<?> add_airport(Airport airport) {
+//        Optional<Airport> findByAirportCode = airportObj.findById(airport.getAirport_code());
+//        try {
+//            if (!findByAirportCode.isPresent()) {
+//                airportObj.save(airport);
+//                return new ResponseEntity<Airport>(airport, HttpStatus.OK);
+//            } else
+//                throw new AvailableRecordException("The airport with airport code " + airport.getAirport_code() + " is already available");
+//        } catch (AvailableRecordException exception) {
+//            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+//        }
+//    }
+
     @Override
-    public ResponseEntity<?> add_airport(Airport airport) {
-        Optional<Airport> findByAirportCode = airportObj.findById(airport.getAirport_code());
+    public ResponseEntity<?> add_airport(AirportRequest request)
+    {
         try {
-            if (!findByAirportCode.isPresent()) {
-                airportObj.save(airport);
-                return new ResponseEntity<Airport>(airport, HttpStatus.OK);
-            } else
-                throw new AvailableRecordException("The airport with airport code " + airport.getAirport_code() + " is already available");
-        } catch (AvailableRecordException exception) {
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+            Optional<Airport> findByAirportCode= airportObj.findById(request.getAirport_code());
+            if(findByAirportCode.isPresent())
+            {
+                throw new Exception("Airport with Airport code "+request.getAirport_code()+" is already present!");
+            }
+            else {
+                    Airport airport = new Airport();
+                    airport.setAirport_code(request.getAirport_code());
+                    airport.setAirport_name(request.getAirport_name());
+                    airport.setAirport_city(request.getAirport_city());
+                    airport.setAirport_state(request.getAirport_state());
+                    airport.setAirport_country(request.getAirport_country());
+                    airportObj.save(airport);
+
+                return new ResponseEntity<>(airport, HttpStatus.CREATED);
+            }
+        }
+        catch(Exception exception)
+        {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
