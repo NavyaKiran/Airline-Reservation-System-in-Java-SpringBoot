@@ -2,6 +2,7 @@ package com.example.OODProject.Controller;
 
 import com.example.OODProject.Exception.NotFoundException;
 import com.example.OODProject.Model.Users;
+import com.example.OODProject.Request.UserRequest;
 import com.example.OODProject.Service.user_services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,15 +18,15 @@ public class UserController {
     user_services service;
 
     @PostMapping("/create_user")
-//    @ExceptionHandler(AvailableRecordException.class)
-    public ResponseEntity<?> add_user(@RequestBody Users user)
+
+    public ResponseEntity<?> add_user(@RequestBody UserRequest user)
     {
         System.out.println("Here");
         return service.create_user(user);
     }
 
     @PutMapping("/update/{email}")
-    @ExceptionHandler(NotFoundException.class)
+
     public ResponseEntity update_user(
             @PathVariable String email,
             @RequestBody Users user)
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @ExceptionHandler(NotFoundException.class)
+
     public ResponseEntity<?> delete_user(@PathVariable("id") String email) {
         return service.delete(email);
     }

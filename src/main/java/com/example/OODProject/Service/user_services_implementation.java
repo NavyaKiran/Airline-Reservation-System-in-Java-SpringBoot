@@ -3,6 +3,7 @@ package com.example.OODProject.Service;
 import com.example.OODProject.Exception.NotFoundException;
 import com.example.OODProject.Model.UserRoles;
 import com.example.OODProject.Model.Users;
+import com.example.OODProject.Request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,20 +22,47 @@ public class user_services_implementation implements user_services {
     @Autowired
     users_dataaccess userObj;
 
+//    @Override
+//    public ResponseEntity<?> create_user(Users user) {
+//        Optional<Users> findByUserID = userObj.findById(user.getEmail());
+//        try {
+//            if (!findByUserID.isPresent()) {
+//                user.setRole(UserRoles.USER);
+//                userObj.save(user);
+//                return new ResponseEntity<Users>(user, HttpStatus.CREATED);
+//            } else
+//                throw new AvailableRecordException("Record of the user with ID " +user.getEmail()+ " is present, cannot add a new record");
+//        } catch (AvailableRecordException exception) {
+//            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+//        }
+//    }
+
     @Override
-    public ResponseEntity<?> create_user(Users user) {
-        Optional<Users> findByUserID = userObj.findById(user.getEmail());
+    public ResponseEntity<?> create_user(UserRequest request) {
         try {
-            if (!findByUserID.isPresent()) {
+            Optional<Users> findByUserID = userObj.findById(request.getEmail());
+            if(findByUserID.isPresent())
+            {
+                throw new Exception("User with email ID "+request.getEmail()+" is already present");
+            }
+            else {
+                Users user = new Users();
                 user.setRole(UserRoles.USER);
+                user.setEmail(request.getEmail());
+                user.setUsername(request.getUsername());
+                user.setPassword(request.getPassword());
+                user.setPhone_number(request.getPhone_number());
                 userObj.save(user);
-                return new ResponseEntity<Users>(user, HttpStatus.OK);
-            } else
-                throw new AvailableRecordException("Record of the user with ID " +user.getEmail()+ " is present, cannot add a new record");
-        } catch (AvailableRecordException exception) {
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+
+                return new ResponseEntity<>(user, HttpStatus.CREATED);
+            }
+        }
+        catch(Exception exception)
+        {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Override
     public ResponseEntity<?> findByEmail(String email) {
@@ -73,9 +101,11 @@ public class user_services_implementation implements user_services {
             return new ResponseEntity<Users>(user, HttpStatus.OK);
         }
         catch(NotFoundException exception) {
+        //catch(Exception exception){
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
 
     @Override
     public ResponseEntity<?> delete(String email) {
