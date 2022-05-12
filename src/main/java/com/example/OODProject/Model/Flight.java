@@ -10,8 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Flight {
 
