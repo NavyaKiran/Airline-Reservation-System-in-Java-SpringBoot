@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Booking {

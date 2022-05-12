@@ -5,10 +5,7 @@ import com.example.OODProject.DataAccess.schedule_dataaccess;
 import com.example.OODProject.DataAccess.users_dataaccess;
 import com.example.OODProject.Exception.AvailableRecordException;
 import com.example.OODProject.Exception.NotFoundException;
-import com.example.OODProject.Model.Booking;
-import com.example.OODProject.Model.Flight;
-import com.example.OODProject.Model.Schedule;
-import com.example.OODProject.Model.Users;
+import com.example.OODProject.Model.*;
 import com.example.OODProject.Request.BookingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +20,7 @@ import java.util.Optional;
 
 @Transactional
 @Service
-public class booking_service_implementation implements booking_service{
+public class booking_service_implementation implements booking_service, email_services{
 
     @Autowired
     booking_dataaccess bookingObj;
@@ -105,8 +102,23 @@ public class booking_service_implementation implements booking_service{
             throw new NotFoundException("The booking with Booking ID " + booking_id + " has not been found");
     }
 
+//    @Override
+//    public Iterable<Booking> view_all() {
+//            return bookingObj.findAll();
+//    }
+
     @Override
-    public Iterable<Booking> view_all() {
-            return bookingObj.findAll();
+    public ResponseEntity<?> view_all() {
+        try {
+            List<Booking> bookings = bookingObj.findAll();
+            return new ResponseEntity<>(bookings, HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void sendEmail(){
+        // send email code
     }
 }

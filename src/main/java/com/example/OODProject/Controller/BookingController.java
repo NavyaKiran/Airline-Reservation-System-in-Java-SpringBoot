@@ -29,14 +29,14 @@ public class BookingController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @ExceptionHandler(NotFoundException.class)
+//    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> delete_booking(@PathVariable("id") Integer booking_id)
     {
         return service.delete_booking(booking_id);
     }
 
     @GetMapping("/view")
-    public Iterable<Booking> view() {
+    public ResponseEntity<?> view() {
         return service.view_all();
     }
 
