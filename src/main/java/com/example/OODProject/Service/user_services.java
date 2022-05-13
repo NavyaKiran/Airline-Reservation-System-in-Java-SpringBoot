@@ -8,4 +8,5 @@ public interface user_services {
     public ResponseEntity<?> findByEmail(String email);
     public ResponseEntity<?> update(Users user, String email);
     public ResponseEntity<?> delete(String email);
+    public ResponseEntity<?> view_all();
 }

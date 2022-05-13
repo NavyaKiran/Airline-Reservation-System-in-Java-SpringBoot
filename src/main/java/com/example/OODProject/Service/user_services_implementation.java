@@ -1,6 +1,7 @@
 package com.example.OODProject.Service;
 
 import com.example.OODProject.Exception.NotFoundException;
+import com.example.OODProject.Model.Schedule;
 import com.example.OODProject.Model.UserRoles;
 import com.example.OODProject.Model.Users;
 import com.example.OODProject.Request.UserRequest;
@@ -12,6 +13,7 @@ import com.example.OODProject.DataAccess.users_dataaccess;
 import com.example.OODProject.Exception.AvailableRecordException;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -117,5 +119,13 @@ public class user_services_implementation implements user_services {
             return new ResponseEntity<>("User with email " + email + "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public ResponseEntity<?> view_all() {
+        try {
+            List<Users> user = userObj.findAll();
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
     }
 

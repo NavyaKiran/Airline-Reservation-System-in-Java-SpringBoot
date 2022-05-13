@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 public class AirportRequest {
     private String airport_code;
     private String airport_name;

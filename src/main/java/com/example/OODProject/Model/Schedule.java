@@ -12,7 +12,7 @@ import java.util.Set;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Schedule {

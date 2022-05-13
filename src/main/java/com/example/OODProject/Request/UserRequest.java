@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor
-
+@AllArgsConstructor
 public class UserRequest {
     private String email;
     private String username;

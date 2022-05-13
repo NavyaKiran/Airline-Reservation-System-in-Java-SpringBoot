@@ -3,6 +3,7 @@ package com.example.OODProject.Service;
 import com.example.OODProject.DataAccess.flight_dataaccess;
 import com.example.OODProject.Exception.AvailableRecordException;
 import com.example.OODProject.Exception.NotFoundException;
+import com.example.OODProject.Model.Booking;
 import com.example.OODProject.Model.Flight;
 import com.example.OODProject.Request.FlightRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -75,16 +77,30 @@ public class flight_services_implementation implements flight_services {
 
 
     @Override
-    public Flight view_specific_flight(Long flight_number) {
-        Optional<Flight> findByFlightNumber = flightObj.findById(flight_number);
-        if (findByFlightNumber.isPresent())
-            return findByFlightNumber.get();
-        else
-            throw new NotFoundException("The flight with flight number " + flight_number + " has not been found");
+    public ResponseEntity view_specific_flight(Long flight_number) {
+        try {
+            Flight findByFlightNumber = flightObj.findById(flight_number).get();
+//            System.out.println("DD");
+//            System.out.println(findByFlightNumber);
+            if (findByFlightNumber != null)
+                return new ResponseEntity(findByFlightNumber, HttpStatus.OK);
+            else
+                throw new NotFoundException("The flight with flight number " + flight_number + " has not been found");
+        } catch (Exception e) {
+                return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
-    @Override
-    public Iterable<Flight> view_all() {
-        return flightObj.findAll();
+//    @Override
+//    public Iterable<Flight> view_all() {
+//        return flightObj.findAll();
+//    }
+public ResponseEntity<?> view_all() {
+    try {
+        List<Flight> flight = flightObj.findAll();
+        return new ResponseEntity<>(flight, HttpStatus.OK);
+    } catch (Exception exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
+}
 }

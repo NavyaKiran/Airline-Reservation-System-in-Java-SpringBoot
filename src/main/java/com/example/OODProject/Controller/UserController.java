@@ -40,4 +40,8 @@ public class UserController {
         return service.delete(email);
     }
 
+    @GetMapping("/view")
+    public ResponseEntity<?> view() {
+        return service.view_all();
+    }
 }

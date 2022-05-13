@@ -12,7 +12,7 @@ import java.time.Instant;
 
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 public class ScheduleRequest {
     private long schedule_id;
     private long flight_number;

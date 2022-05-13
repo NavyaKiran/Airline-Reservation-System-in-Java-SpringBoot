@@ -6,6 +6,7 @@ import com.example.OODProject.Model.Schedule;
 import com.example.OODProject.Model.Users;
 import com.example.OODProject.Request.ScheduleRequest;
 import com.example.OODProject.Service.schedule_services;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/view")
-    public Iterable<Schedule> view() {
+    public ResponseEntity<?> view() {
         return service.view_all();
     }
 

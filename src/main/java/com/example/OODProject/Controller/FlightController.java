@@ -40,14 +40,15 @@ public class FlightController {
     }
 
     @GetMapping("/view")
-    public Iterable<Flight> view() {
+    public ResponseEntity<?> view() {
         return service.view_all();
     }
 
     @GetMapping("/viewByFlightNumber/{id}")
     @ExceptionHandler(NotFoundException.class)
-    public Flight viewByFlightNumber(@PathVariable("id") Long flight_number)
+    public ResponseEntity<?> viewByFlightNumber(@PathVariable("id") Long flight_number)
     {
         return service.view_specific_flight(flight_number);
     }
 }
+

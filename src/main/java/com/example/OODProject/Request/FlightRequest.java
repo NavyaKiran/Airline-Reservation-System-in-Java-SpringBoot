@@ -1,6 +1,7 @@
 package com.example.OODProject.Request;
 
 import com.example.OODProject.Model.Flight_type;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.Enumerated;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlightRequest {
     private long flight_number;
     private String airline;
