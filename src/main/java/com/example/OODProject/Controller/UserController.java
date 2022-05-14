@@ -21,7 +21,7 @@ public class UserController {
 
     public ResponseEntity<?> add_user(@RequestBody UserRequest user)
     {
-        System.out.println("Here");
+        //System.out.println("Here");
         return service.create_user(user);
     }
 
@@ -45,3 +45,4 @@ public class UserController {
         return service.view_all();
     }
 }
+

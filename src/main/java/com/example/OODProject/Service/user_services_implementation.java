@@ -24,20 +24,6 @@ public class user_services_implementation implements user_services {
     @Autowired
     users_dataaccess userObj;
 
-//    @Override
-//    public ResponseEntity<?> create_user(Users user) {
-//        Optional<Users> findByUserID = userObj.findById(user.getEmail());
-//        try {
-//            if (!findByUserID.isPresent()) {
-//                user.setRole(UserRoles.USER);
-//                userObj.save(user);
-//                return new ResponseEntity<Users>(user, HttpStatus.CREATED);
-//            } else
-//                throw new AvailableRecordException("Record of the user with ID " +user.getEmail()+ " is present, cannot add a new record");
-//        } catch (AvailableRecordException exception) {
-//            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
-//        }
-//    }
 
     @Override
     public ResponseEntity<?> create_user(UserRequest request) {
@@ -111,12 +97,18 @@ public class user_services_implementation implements user_services {
 
     @Override
     public ResponseEntity<?> delete(String email) {
-        Optional<Users> findByEmail = userObj.findById(email);
-        if (findByEmail.isPresent()) {
-            userObj.deleteById(email);
-            return new ResponseEntity<>("The user with email " + email + "has been deleted", HttpStatus.ACCEPTED);
-        } else
-            return new ResponseEntity<>("User with email " + email + "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            Optional<Users> findByEmailID = userObj.findById(email);
+            if (findByEmailID.isPresent()) {
+                userObj.deleteById(email);
+                return new ResponseEntity<>("The user with email " + email + " has been deleted", HttpStatus.ACCEPTED);
+            } else
+                throw new Exception("The user with email " + email + "could not be deleted");
+        }
+        catch(Exception exception)
+        {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     public ResponseEntity<?> view_all() {

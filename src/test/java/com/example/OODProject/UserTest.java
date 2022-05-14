@@ -37,14 +37,5 @@ public class UserTest {
                 .andExpect( status().isAccepted() );
     }
 
-//    @Test
-//    public void modifyUserTest() throws Exception {
-//        Object user = "{\"username\": \"navyakiranvb\"}";
-//        String email = "nav@gmail.com";
-//        this.mvc.perform(put("/api/user/update/"+email).contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(user.toString()))
-//                .andExpect( status().isCreated()).andExpect(status().isOk());
-//    }
 
 }

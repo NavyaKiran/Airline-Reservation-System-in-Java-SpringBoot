@@ -3,9 +3,9 @@ package com.example.OODProject.Service;
 import com.example.OODProject.DataAccess.flight_dataaccess;
 import com.example.OODProject.Exception.AvailableRecordException;
 import com.example.OODProject.Exception.NotFoundException;
-import com.example.OODProject.Model.Booking;
-import com.example.OODProject.Model.Flight;
+import com.example.OODProject.Model.*;
 import com.example.OODProject.Request.FlightRequest;
+import com.example.OODProject.Request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,21 +23,33 @@ public class flight_services_implementation implements flight_services {
     @Autowired
     flight_dataaccess flightObj;
 
+
     @Override
-    public ResponseEntity<?> add_flight(Flight flight) {
-        Optional<Flight> findByFlightNumber = flightObj.findById(flight.getFlight_number());
+    public ResponseEntity<?> add_flight(FlightRequest request) {
         try {
-            if(!findByFlightNumber.isPresent())
+            Optional<Flight> findByFlightNumber = flightObj.findById(request.getFlight_number());
+            if(findByFlightNumber.isPresent())
             {
-                flightObj.save(flight);
-                return new ResponseEntity<>(flight, HttpStatus.OK);
+                throw new Exception("Flight with flight number "+request.getFlight_number()+" is already present");
             }
-            else
-                throw new AvailableRecordException("The flight with flight number "+flight.getFlight_number()+" is already available");
+            else {
+               Flight flight = new Flight();
+               flight.setFlight_number(request.getFlight_number());
+               flight.setAirline(request.getAirline());
+               flight.setNumber_of_seats(request.getNumber_of_seats());
+               if(request.getFlight_type().toString().toUpperCase() == Flight_type.AIRBUS.toString())
+                   flight.setFlight_type(Flight_type.AIRBUS);
+               else
+                   flight.setFlight_type(Flight_type.BOEING);
+
+               flightObj.save(flight);
+
+                return new ResponseEntity<>(flight, HttpStatus.CREATED);
+            }
         }
-        catch(AvailableRecordException exception)
+        catch(Exception exception)
         {
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,19 +77,23 @@ public class flight_services_implementation implements flight_services {
 
     @Override
     public ResponseEntity<?> delete_flight(Long flight_number) {
-        Optional<Flight> findByFlightNumber = flightObj.findById(flight_number);
-        if(findByFlightNumber.isPresent())
-        {
-            flightObj.deleteById(flight_number);
-            return new ResponseEntity<>("The flight with flight number " + flight_number + "has been deleted", HttpStatus.ACCEPTED);
+        try {
+            Optional<Flight> findByFlightNumber = flightObj.findById(flight_number);
+            if (findByFlightNumber.isPresent()) {
+                flightObj.deleteById(flight_number);
+                return new ResponseEntity<>("The flight with flight number " + flight_number + " has been deleted", HttpStatus.ACCEPTED);
+            } else
+                throw new Exception("The flight with flight number " + flight_number + "could not be deleted");
         }
-        else
-            return new  ResponseEntity<>("The flight with flight number " +flight_number+ "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        catch(Exception exception)
+        {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
 
     @Override
-    public ResponseEntity view_specific_flight(Long flight_number) {
+    public ResponseEntity<?> view_specific_flight(Long flight_number) {
         try {
             Flight findByFlightNumber = flightObj.findById(flight_number).get();
 //            System.out.println("DD");
@@ -86,8 +102,8 @@ public class flight_services_implementation implements flight_services {
                 return new ResponseEntity(findByFlightNumber, HttpStatus.OK);
             else
                 throw new NotFoundException("The flight with flight number " + flight_number + " has not been found");
-        } catch (Exception e) {
-                return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception exception) {
+                return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

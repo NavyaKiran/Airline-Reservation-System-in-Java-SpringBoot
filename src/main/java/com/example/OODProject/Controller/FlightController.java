@@ -4,6 +4,7 @@ package com.example.OODProject.Controller;
 import com.example.OODProject.Exception.AvailableRecordException;
 import com.example.OODProject.Exception.NotFoundException;
 import com.example.OODProject.Model.Flight;
+import com.example.OODProject.Request.FlightRequest;
 import com.example.OODProject.Service.flight_services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +21,7 @@ public class FlightController {
 
     @PostMapping("/add_flight")
     @ExceptionHandler(AvailableRecordException.class)
-    public ResponseEntity<?> create_flight(@RequestBody Flight flight)
+    public ResponseEntity<?> create_flight(@RequestBody FlightRequest flight)
     {
         return service.add_flight(flight);
     }

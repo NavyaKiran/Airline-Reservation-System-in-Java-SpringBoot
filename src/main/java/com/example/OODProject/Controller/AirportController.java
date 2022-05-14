@@ -39,11 +39,6 @@ public class AirportController {
 
     }
 
-//    @GetMapping("/view")
-//    public Iterable<Airport> view() {
-//        return service.view_all();
-//    }
-
         @GetMapping("/view")
         public ResponseEntity<?> view() {
         return service.view_all();
@@ -52,7 +47,7 @@ public class AirportController {
 
     @GetMapping("/viewByAirportCode/{id}")
     @ExceptionHandler(NotFoundException.class)
-    public Airport viewByAirportCode(@PathVariable("id") String airport_code)
+    public ResponseEntity<?> viewByAirportCode(@PathVariable("id") String airport_code)
     {
         return service.view_specific_airport(airport_code);
     }

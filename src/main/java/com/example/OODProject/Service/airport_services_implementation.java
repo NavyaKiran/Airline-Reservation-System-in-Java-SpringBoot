@@ -23,19 +23,6 @@ public class airport_services_implementation implements airport_services {
     @Autowired
     airport_dataaccess airportObj;
 
-//    @Override
-//    public ResponseEntity<?> add_airport(Airport airport) {
-//        Optional<Airport> findByAirportCode = airportObj.findById(airport.getAirport_code());
-//        try {
-//            if (!findByAirportCode.isPresent()) {
-//                airportObj.save(airport);
-//                return new ResponseEntity<Airport>(airport, HttpStatus.OK);
-//            } else
-//                throw new AvailableRecordException("The airport with airport code " + airport.getAirport_code() + " is already available");
-//        } catch (AvailableRecordException exception) {
-//            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
-//        }
-//    }
 
     @Override
     public ResponseEntity<?> add_airport(AirportRequest request)
@@ -91,22 +78,31 @@ public class airport_services_implementation implements airport_services {
 
     @Override
     public ResponseEntity<?> delete_airport(String airport_code) {
-        Optional<Airport> findByAirportCode = airportObj.findById(airport_code);
-        if (findByAirportCode.isPresent()) {
-            airportObj.deleteById(airport_code);
-            return new ResponseEntity<>("The airport with airport code " + airport_code + "has been deleted", HttpStatus.ACCEPTED);
-        } else
-            return new ResponseEntity<>("The airport with airport code " + airport_code + "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            Optional<Airport> findByAirportCode = airportObj.findById(airport_code);
+            if (findByAirportCode.isPresent()) {
+                airportObj.deleteById(airport_code);
+                return new ResponseEntity<>("The airport with airport code " + airport_code + "has been deleted", HttpStatus.ACCEPTED);
+            } else
+                throw new Exception("The airport with airport code " + airport_code + "could not be deleted");
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
 
     @Override
-    public Airport view_specific_airport(String airport_code) {
-        Optional<Airport> findByAirportCode = airportObj.findById(airport_code);
-        if (findByAirportCode.isPresent())
-            return findByAirportCode.get();
-        else
-            throw new NotFoundException("The airport with airport code " + airport_code + " has not been found");
+    public ResponseEntity<?> view_specific_airport(String airport_code) {
+        try {
+            Airport findByAirportCode = airportObj.findById(airport_code).get();
+            if (findByAirportCode != null)
+                return new ResponseEntity(findByAirportCode, HttpStatus.OK);
+            else
+                throw new NotFoundException("The airport with airport code " + airport_code + " has not been found");
+        }
+        catch (Exception exception) {
+            return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
 

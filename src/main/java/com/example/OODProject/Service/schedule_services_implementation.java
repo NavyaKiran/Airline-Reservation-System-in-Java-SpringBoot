@@ -4,10 +4,7 @@ import com.example.OODProject.DataAccess.airport_dataaccess;
 import com.example.OODProject.DataAccess.flight_dataaccess;
 import com.example.OODProject.DataAccess.schedule_dataaccess;
 import com.example.OODProject.Exception.NotFoundException;
-import com.example.OODProject.Model.Airport;
-import com.example.OODProject.Model.Flight;
-import com.example.OODProject.Model.Schedule;
-import com.example.OODProject.Model.ScheduleStatus;
+import com.example.OODProject.Model.*;
 import com.example.OODProject.Request.ScheduleRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +19,6 @@ import java.util.Optional;
 @Service
 public class schedule_services_implementation implements schedule_services {
 
-    //Autowired Singleton, where there is a reference to different repositories apart from Schedule data access.
     @Autowired
     schedule_dataaccess scheduleObj;
 
@@ -79,34 +75,51 @@ public class schedule_services_implementation implements schedule_services {
         }
     }
 
-    //    @Override
-//    public ResponseEntity<?> modify_schedule(Schedule schedule, Long schedule_id) {
-//        return null;
-//    }
-//
+
+
     @Override
     public ResponseEntity<?> delete_schedule(Long schedule_id) {
-        Optional<Schedule> findByScheduleID = scheduleObj.findById(schedule_id);
-        // find all bookings with this schedule id
-        if (findByScheduleID.isPresent()) {
-            scheduleObj.deleteById(schedule_id);
-            return new ResponseEntity<>("The schedule with Schedule ID " + schedule_id + "has been deleted", HttpStatus.ACCEPTED);
-        } else
-            return new ResponseEntity<>("The schedule with schedule ID  " + schedule_id + "could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            Optional<Schedule> findByScheduleID = scheduleObj.findById(schedule_id);
+            if (findByScheduleID.isPresent()) {
+                scheduleObj.deleteById(schedule_id);
+                return new ResponseEntity<>("The schedule with schedule ID " + schedule_id + " has been deleted", HttpStatus.ACCEPTED);
+            } else
+                throw new Exception("The schedule with schedule ID " + schedule_id + "could not be deleted");
+        }
+        catch(Exception exception)
+        {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
+
+//    @Override
+//    public Schedule view_specific_schedule(Long schedule_id) {
+//        Optional<Schedule> findByScheduleID = scheduleObj.findById(schedule_id);
+//        if (findByScheduleID.isPresent())
+//            return findByScheduleID.get();
+//        else
+//            throw new NotFoundException("The schedule with ID " + schedule_id + " has not been found");
+//    }
 
     @Override
-    public Schedule view_specific_schedule(Long schedule_id) {
-        Optional<Schedule> findByScheduleID = scheduleObj.findById(schedule_id);
-        if (findByScheduleID.isPresent())
-            return findByScheduleID.get();
-        else
-            throw new NotFoundException("The schedule with ID " + schedule_id + " has not been found");
+    public ResponseEntity<?> view_specific_schedule(Long schedule_id) {
+        try {
+            Schedule findByScheduleID = scheduleObj.findById(schedule_id).get();
+            if (findByScheduleID != null)
+                return new ResponseEntity(findByScheduleID, HttpStatus.OK);
+            else
+                throw new Exception(" The Schedule with ID" + schedule_id + " has not been found");
+        }
+        catch (Exception exception)
+        {
+//            System.out.println("navya");
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
-    //
-//
+
     public ResponseEntity<?> view_all() {
         try {
             List<Schedule> schedule = scheduleObj.findAll();

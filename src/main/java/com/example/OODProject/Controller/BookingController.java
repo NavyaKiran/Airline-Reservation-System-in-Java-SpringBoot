@@ -29,7 +29,7 @@ public class BookingController {
     }
 
     @DeleteMapping("/delete/{id}")
-//    @ExceptionHandler(NotFoundException.class)
+
     public ResponseEntity<?> delete_booking(@PathVariable("id") Integer booking_id)
     {
         return service.delete_booking(booking_id);
@@ -41,8 +41,8 @@ public class BookingController {
     }
 
     @GetMapping("/viewByBookingID/{id}")
-    @ExceptionHandler(NotFoundException.class)
-    public Booking viewByScheduleID(@PathVariable("id") Integer booking_id)
+
+    public ResponseEntity<?> viewByScheduleID(@PathVariable("id") Integer booking_id)
     {
         return service.view_specific_booking(booking_id);
     }

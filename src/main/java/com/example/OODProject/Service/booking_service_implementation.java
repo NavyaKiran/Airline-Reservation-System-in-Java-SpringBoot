@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Transactional
 @Service
-public class booking_service_implementation implements booking_service, email_services{
+public class booking_service_implementation implements booking_service{     //booking_services_implmn is adapter booking_services is target
 
     @Autowired
     booking_dataaccess bookingObj;
@@ -30,6 +30,9 @@ public class booking_service_implementation implements booking_service, email_se
 
     @Autowired
     users_dataaccess userObj;
+
+    // Adapter patterns where the current class acts as adapter, booking_service as target and email service is adaptee
+    email_services emailServiceRef;
 
     @Override
     public ResponseEntity<?> add_booking(BookingRequest bookingRequest) {
@@ -77,35 +80,48 @@ public class booking_service_implementation implements booking_service, email_se
             bookingObj.delete(booking);
             scheduleObj.save(schedule);
             return new ResponseEntity<>("Booking deleted successfully", HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
+        } catch (Exception exception){
+            return new ResponseEntity<>("Error: " + exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
         }
 
     }
 
-    @Override
-    public Booking view_specific_booking(int booking_id) {
+//    @Override
+//    public Booking view_specific_booking(int booking_id) {
+////
+////        try {
+////            Booking booking = bookingObj.getById(booking_id);
+////            if (booking == null)
+////                throw new Exception("Invalid booking_id, cannot view");
+////            return new ResponseEntity<>(booking, HttpStatus.OK);
+////        } catch (Exception e){
+////            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
+////        }
 //
-//        try {
-//            Booking booking = bookingObj.getById(booking_id);
-//            if (booking == null)
-//                throw new Exception("Invalid booking_id, cannot view");
-//            return new ResponseEntity<>(booking, HttpStatus.OK);
-//        } catch (Exception e){
-//            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
-//        }
+//        Optional<Booking> findByBookingID = bookingObj.findById(booking_id);
+//        if (findByBookingID.isPresent())
+//            return findByBookingID.get();
+//        else
+//            throw new NotFoundException("The booking with Booking ID " + booking_id + " has not been found");
+//    }
 
-        Optional<Booking> findByBookingID = bookingObj.findById(booking_id);
-        if (findByBookingID.isPresent())
-            return findByBookingID.get();
-        else
-            throw new NotFoundException("The booking with Booking ID " + booking_id + " has not been found");
+    @Override
+    public ResponseEntity<?> view_specific_booking(int booking_id) {
+        try {
+            Booking findByBookingID = bookingObj.findById(booking_id).get();
+            if (findByBookingID != null)
+                return new ResponseEntity(findByBookingID, HttpStatus.OK);
+            else
+                throw new Exception("The booking with booking ID " + booking_id + " has not been found");
+        }
+        catch (Exception exception)
+        {
+//            System.out.println("navya");
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
-//    @Override
-//    public Iterable<Booking> view_all() {
-//            return bookingObj.findAll();
-//    }
+
 
     @Override
     public ResponseEntity<?> view_all() {
@@ -117,8 +133,11 @@ public class booking_service_implementation implements booking_service, email_se
         }
     }
 
-    @Override
-    public void sendEmail(){
-        // send email code
+
+    public void sendEmail(Users user){
+        // send email code uses adaptee
+        emailServiceRef.sendEmail(user);
+
+        //
     }
 }

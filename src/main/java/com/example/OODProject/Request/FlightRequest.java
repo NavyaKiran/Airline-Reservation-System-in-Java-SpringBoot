@@ -16,4 +16,5 @@ public class FlightRequest {
     private String airline;
     private int number_of_seats;
     private Flight_type flight_type;
+
 }

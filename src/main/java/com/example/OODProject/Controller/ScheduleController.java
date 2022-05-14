@@ -41,7 +41,7 @@ public class ScheduleController {
 
     @GetMapping("/viewByScheduleID/{id}")
     @ExceptionHandler(NotFoundException.class)
-    public Schedule viewByScheduleID(@PathVariable("id") Long schedule_id)
+    public ResponseEntity<?> viewByScheduleID(@PathVariable("id") Long schedule_id)
     {
         return service.view_specific_schedule(schedule_id);
     }
